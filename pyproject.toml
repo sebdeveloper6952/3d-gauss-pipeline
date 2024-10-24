@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "python-pipeline"
+version = "0.1.0"
+description = ""
+authors = ["sebas <sebdeveloper6952@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pycolmap = "^3.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
