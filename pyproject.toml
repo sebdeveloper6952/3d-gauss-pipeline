@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.13"
 pycolmap = {path = "../colmap/pycolmap"}
+enlighten = "^1.12.4"
 
 [build-system]
 requires = ["poetry-core"]
