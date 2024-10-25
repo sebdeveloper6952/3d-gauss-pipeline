@@ -1,10 +1,7 @@
-import shutil
-import urllib.request
-import zipfile
 from pathlib import Path
 import enlighten
 import pycolmap
-from pycolmap import logging
+
 
 def incremental_mapping_with_pbar(db_path, image_path, sfm_dir):
     num_images = pycolmap.Database(db_path).num_images
@@ -22,30 +19,40 @@ def incremental_mapping_with_pbar(db_path, image_path, sfm_dir):
             )
     return reconstructions
 
+
 def run():
     output_dir = Path("./output")
     image_dir = Path("./input")
-    
+
     db_path = output_dir / "database.db"
-    stereo_dir = output_dir / "stereo"
-    sfm_dir = output_dir / "sfm"
-    
+    sfm_dir = output_dir / "0_sfm"
+    undistort_dir = output_dir / "1_undistort"
+
     # first step, feature extract & match
     # this only writes to the database, there is no file output yet
-    if db_path.exists():
-        db_path.unlink()
+    # if db_path.exists():
+    #    db_path.unlink()
     pycolmap.set_random_seed(0)
-    pycolmap.extract_features(db_path, image_dir)
+    pycolmap.extract_features(
+            db_path,
+            image_dir,
+            camera_model="SIMPLE_PINHOLE",
+    )
     pycolmap.match_exhaustive(db_path)
 
     # reconstruct image by image
     # writes output to sfm_dir, the output is
-    recs = incremental_mapping_with_pbar(db_path, image_path, sfm_dir) 
+    recs = incremental_mapping_with_pbar(db_path, image_dir, sfm_dir)
+    print(recs)
 
-    # dense reconstruction
-    #pycolmap.undistort_images(stereo_path, output_path, image_dir)
-    #pycolmap.patch_match_stereo(stereo_path)
-    #pycolmap.stereo_fusion(stereo_path / "dense.ply", stereo_path)
+    # undistort images writes to output/1_undistort
+    pycolmap.undistort_images(undistort_dir, sfm_dir / "0", image_dir)
+
+    # match stereo writes to output/1_undistort/stereo
+    # it writes:
+    pycolmap.patch_match_stereo(undistort_dir)
+    # pycolmap.stereo_fusion(undistort_dir / "dense.ply", undistort_dir / "stereo")
+
 
 if __name__ == "__main__":
     run()
