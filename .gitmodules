@@ -1,0 +1,9 @@
+[submodule "colmap"]
+	path = colmap
+	url = https://github.com/colmap/colmap
+[submodule "simple-knn"]
+	path = simple-knn
+	url = git@github.com:sebdeveloper6952/simple-knn.git
+[submodule "diff-gaussian-rasterization"]
+	path = diff-gaussian-rasterization
+	url = git@github.com:sebdeveloper6952/diff-gaussian-rasterization.git
